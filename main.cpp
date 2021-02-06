@@ -16,11 +16,13 @@ void f() {}
 int main()
 {
     int a{7}, b{6};
-    std::cout << "Hello, world!";
+    std::cout << "Hello, master";
     std::cout << pow(a, b) << std::endl;
     std::cout << std::sqrt(pow(a,2) + pow(b,2)) << std::endl;
     std::cout << a + b << std::endl;
     std::cout << a - b << std::endl;
+    ++a;
+    --b;
     std::cout << multiply(a, b) << std::endl;
 
     //при использовании Merge мы подгружали всю историю коммитов. Благодаря этому сохраняется детальное описание
