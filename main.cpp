@@ -22,19 +22,30 @@ class Timer
 public:
     using clock_t = std::chrono::steady_clock;
     using time_point_t = clock_t::time_point;
-    std::chrono::milliseconds interval_pause{100};
+    inline static time_point_t beg_pause = clock_t::now();
+    inline static time_point_t end_pause = clock_t::now();
     Timer(): m_begin(clock_t::now()) {}
     ~Timer()
     {
         auto end = clock_t::now();
-        std::cout << "milliseconds: " << std::chrono::duration_cast <std::chrono::milliseconds> (end - m_begin).count() - interval_pause.count() << std::endl;
+        std::cout << "milliseconds (whole program): " << std::chrono::duration_cast <std::chrono::milliseconds> (end - m_begin).count() << std::endl;
+        std::cout << "pause begin: " << std::chrono::duration_cast <std::chrono::milliseconds> (beg_pause - m_begin).count() << std::endl;
+        std::cout << "pause end: " << std::chrono::duration_cast <std::chrono::milliseconds> (end_pause - m_begin).count() << std::endl;
+        std::cout << "milliseconds (with pause): " << std::chrono::duration_cast <std::chrono::milliseconds> (end - m_begin).count() -
+                                         std::chrono::duration_cast <std::chrono::milliseconds> (end_pause - beg_pause).count() << std::endl;
     }
-    /*void pause()
+    static void pause()
     {
-        ++interval_pause;
-    }*/
+        beg_pause = clock_t::now();
+    }
+    static void pusk()
+    {
+        end_pause = clock_t::now();
+    }
 private:
     time_point_t m_begin;
+    std::chrono::milliseconds interval_pause;
+    std::chrono::milliseconds interval2;
 };
 
 int main()
@@ -65,7 +76,13 @@ int main()
     Timer t;
     std::sort(std::begin(v), std::end(v));
 
-    //Timer::pause();
+    Timer::pause();
+
+    std::sort(std::begin(v), std::end(v));
+
+    Timer::pusk();
+
+    std::sort(std::begin(v), std::end(v));
 
     return 0;
 }
