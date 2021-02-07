@@ -9,4 +9,12 @@
 /home/vladlen/Testik/main.cpp
 iostream
 -
+cmath
+-
+chrono
+-
+vector
+-
+algorithm
+-
 
