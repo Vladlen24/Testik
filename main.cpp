@@ -3,6 +3,8 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
+#include <ctime>
+#include <cstdlib>
 
 /*int multiply(int a, int b) {
 
@@ -22,9 +24,9 @@ class Timer
 public:
     using clock_t = std::chrono::steady_clock;
     using time_point_t = clock_t::time_point;
-    inline static time_point_t beg_pause = clock_t::now();
-    inline static time_point_t end_pause = clock_t::now();
-    inline static std::chrono::milliseconds interval_pause{0};
+    time_point_t beg_pause = clock_t::now();
+    time_point_t end_pause = clock_t::now();
+    std::chrono::milliseconds interval_pause{0};
 
     Timer(): m_begin(clock_t::now()) {}
 
@@ -38,12 +40,12 @@ public:
                 (end - m_begin).count() - interval_pause.count() << std::endl;                                               // время работы только "активных" сортировок
     }
 
-    static void pause()
+    void pause()
     {
         beg_pause = clock_t::now();
     }
 
-    static void pusk()
+    void pusk()
     {
         end_pause = clock_t::now();
         interval_pause.operator+=(std::chrono::duration_cast <std::chrono::milliseconds> (end_pause - beg_pause));
@@ -52,6 +54,15 @@ public:
 private:
     time_point_t m_begin;
 };
+
+std::vector<int> get_rand_v(int n) {
+    srand(time(nullptr));
+    std::vector<int> v(n);
+    for (int& x : v) {
+        x = rand();
+    }
+    return v;
+}
 
 int main()
 {
@@ -71,42 +82,36 @@ int main()
     //Тогда в Loge видим только одну петельку, которая отображает перемещение из новой ветки в ветку мастера (даже
     //если в новой ветке много комитов). Причем эта петелька поднимается выше последнего коммита
 
-    std::vector v (1000000, 0);
+    std::vector<int> v = get_rand_v(1000000);
 
-    for (auto i = 0; i < std::size(v); ++i)
-    {
-        v[i] = 1000000 - i;
-    }
+    Timer t;                                               // СТАРТ хронометра
 
-    Timer t;                                                     // СТАРТ хронометра
+    std::sort(std::begin(v), std::end(v));                // сортировка     (начало цикла 1)
 
-    std::sort(std::begin(v), std::end(v));                // сортировка 1.1     (начало цикла 1)
+    t.pause();                                             // ПАУЗА
 
-    Timer::pause();                                             // ПАУЗА
+    v = get_rand_v(1000000);                                 // перетасовка
 
-    std::sort(std::begin(v), std::end(v));               // сортировка 1.2
+    t.pusk();                                             // ПУСК
 
-    Timer::pusk();                                             // ПУСК
+    std::sort(std::begin(v), std::end(v));               // сортировка      (конец цикла 1 && начало цикла 2)
 
-    std::sort(std::begin(v), std::end(v));              // сортировка 1.3 (2.1)      (конец цикла 1 && начало цикла 2)
+    t.pause();                                            // ПАУЗА
 
-    Timer::pause();                                             // ПАУЗА
+    v = get_rand_v(1000000);                                // перетасовка
 
-    std::sort(std::begin(v), std::end(v));               // сортировка 2.2
+    t.pusk();                                             // ПУСК
 
-    Timer::pusk();                                             // ПУСК
+    std::sort(std::begin(v), std::end(v));              // сортировка       (конец цикла 2 && начало цикла 3)
 
-    std::sort(std::begin(v), std::end(v));              // сортировка 2.3       (конец цикла 2 && начало цикла 3)
+    t.pause();                                            // ПАУЗА
 
-    Timer::pause();                                             // ПАУЗА
+    v = get_rand_v(1000000);                               // перетасовка
 
-    std::sort(std::begin(v), std::end(v));               // сортировка 3.2
+    t.pusk();                                             // ПУСК
 
-    Timer::pusk();                                             // ПУСК
+    std::sort(std::begin(v), std::end(v));             // сортировка       (конец цикла 3)
 
-    std::sort(std::begin(v), std::end(v));              // сортировка 3.3       (конец цикла 3)
-
-                                                                // ФИНИШ хронометра
-
+                                                         // ФИНИШ хронометра
     return 0;
 }
