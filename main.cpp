@@ -24,28 +24,33 @@ public:
     using time_point_t = clock_t::time_point;
     inline static time_point_t beg_pause = clock_t::now();
     inline static time_point_t end_pause = clock_t::now();
+    inline static std::chrono::milliseconds interval_pause{0};
+
     Timer(): m_begin(clock_t::now()) {}
+
     ~Timer()
     {
         auto end = clock_t::now();
-        std::cout << "milliseconds (whole program): " << std::chrono::duration_cast <std::chrono::milliseconds> (end - m_begin).count() << std::endl;
-        std::cout << "pause begin: " << std::chrono::duration_cast <std::chrono::milliseconds> (beg_pause - m_begin).count() << std::endl;
-        std::cout << "pause end: " << std::chrono::duration_cast <std::chrono::milliseconds> (end_pause - m_begin).count() << std::endl;
-        std::cout << "milliseconds (with pause): " << std::chrono::duration_cast <std::chrono::milliseconds> (end - m_begin).count() -
-                                         std::chrono::duration_cast <std::chrono::milliseconds> (end_pause - beg_pause).count() << std::endl;
+        std::cout << "milliseconds (whole program): " << std::chrono::duration_cast <std::chrono::milliseconds>                 // время работы всех сортировок (даже тех что в паузе)
+                (end - m_begin).count() << std::endl;
+        std::cout << "interval of break: " << interval_pause.count() << std::endl;                                              // сумарное время всех перерывов
+        std::cout << "milliseconds (only working part of program): " << std::chrono::duration_cast <std::chrono::milliseconds>
+                (end - m_begin).count() - interval_pause.count() << std::endl;                                               // время работы только "активных" сортировок
     }
+
     static void pause()
     {
         beg_pause = clock_t::now();
     }
+
     static void pusk()
     {
         end_pause = clock_t::now();
+        interval_pause.operator+=(std::chrono::duration_cast <std::chrono::milliseconds> (end_pause - beg_pause));
     }
+
 private:
     time_point_t m_begin;
-    std::chrono::milliseconds interval_pause;
-    std::chrono::milliseconds interval2;
 };
 
 int main()
@@ -73,16 +78,35 @@ int main()
         v[i] = 1000000 - i;
     }
 
-    Timer t;
-    std::sort(std::begin(v), std::end(v));
+    Timer t;                                                     // СТАРТ хронометра
 
-    Timer::pause();
+    std::sort(std::begin(v), std::end(v));                // сортировка 1.1     (начало цикла 1)
 
-    std::sort(std::begin(v), std::end(v));
+    Timer::pause();                                             // ПАУЗА
 
-    Timer::pusk();
+    std::sort(std::begin(v), std::end(v));               // сортировка 1.2
 
-    std::sort(std::begin(v), std::end(v));
+    Timer::pusk();                                             // ПУСК
+
+    std::sort(std::begin(v), std::end(v));              // сортировка 1.3 (2.1)      (конец цикла 1 && начало цикла 2)
+
+    Timer::pause();                                             // ПАУЗА
+
+    std::sort(std::begin(v), std::end(v));               // сортировка 2.2
+
+    Timer::pusk();                                             // ПУСК
+
+    std::sort(std::begin(v), std::end(v));              // сортировка 2.3       (конец цикла 2 && начало цикла 3)
+
+    Timer::pause();                                             // ПАУЗА
+
+    std::sort(std::begin(v), std::end(v));               // сортировка 3.2
+
+    Timer::pusk();                                             // ПУСК
+
+    std::sort(std::begin(v), std::end(v));              // сортировка 3.3       (конец цикла 3)
+
+                                                                // ФИНИШ хронометра
 
     return 0;
 }
