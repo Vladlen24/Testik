@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/vladlen/Testik/main.cpp
+/home/vladlen/Testik/week_1/main.cpp
 iostream
 -
 cmath
