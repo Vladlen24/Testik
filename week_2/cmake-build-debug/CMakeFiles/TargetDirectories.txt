@@ -1,3 +1,0 @@
-/home/vladlen/Testik/week_2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/vladlen/Testik/week_2/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/vladlen/Testik/week_2/cmake-build-debug/CMakeFiles/week_2.dir
