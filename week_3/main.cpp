@@ -9,6 +9,7 @@
 #include <list>
 #include <deque>
 #include <forward_list>
+#include <set>
 
 class Timer
 {
@@ -47,142 +48,57 @@ std::vector<int> get_rand_v(int n) {
     return v;
 }
 
-std::deque<int> get_rand_d(int n) {
+std::set<int> get_rand_s(int n) {
     srand(time(nullptr));
-    std::deque<int> d(n);
-    for (int& x : d) {
+    std::vector<int> v(n);
+    std::set<int> s;
+    for (int& x : v) {
         x = rand();
+        s.insert(x);
     }
-    return d;
-}
-
-std::list<int> get_rand_l(int n) {
-    srand(time(nullptr));
-    std::list<int> l(n);
-    for (int& x : l) {
-        x = rand();
-    }
-    return l;
-}
-
-std::forward_list<int> get_rand_fl(int n) {
-    srand(time(nullptr));
-    std::forward_list<int> fl(n);
-    for (int& x : fl) {
-        x = rand();
-    }
-    return fl;
-}
-
-void printcap(std::vector<int> &p) {
-    std::cout << "size: " << p.size() << " cap: " << p.capacity() << std::endl;
+    return s;
 }
 
 int main()
 {
 
-    int a = 7;
-
     {
-        std::array<int,1000000> ar = get_rand_ar();                                 // блок для МАССИВа
-        std::cout << "std::sort for ARRAY: ";
+        int n = 2000000;
+        std::vector<int> v = get_rand_v(n);
         {
-            Timer t1;                                                               // запускаем таймер
-
-            std::sort(std::begin(ar), std::end(ar));                         // стандартная сортировка std::sort
-        }                                                                          // конец работы таймера
-        std::cout << "ar.sort() is absent for array" << std::endl;
-        {
-            //Timer t1;
-            //ar.sort();                                                           // для массива функции-члена сортировки нет
+            std::cout << "set: ";                                               // сложность этого блока иммет ассимптотику O(NlogN); при замерах времени
+            Timer t;                                                            // была заметна зависимость времени от количества элементов в векторе как раз
+                                                                                // по закону NlogN с некоторым коэффициентом (в зависимости от системы и компилятора он может
+            std::set<int> s;                                                    // разнится; у меня получился 0.0001. {Пример: при 200000 элемент блок отработал за 248 милисекунд}
+            for (int& x : v) {
+                x = rand();
+                s.insert(x);
+            }
         }
-    }
-
-
-    {
-        std::vector<int> v = get_rand_v(1000000);                               // блок для ВЕКТОРа
-        std::cout << "std::sort for VECTOR: ";
         {
-            Timer t2;                                                              // запускаем таймер
-
-            std::sort(std::begin(v), std::end(v));                          // стандартная сортировка std::sort
-        }                                                                          // конец работы таймера
-        std::cout << "v.sort() is absent for vector" << std::endl;
-        {
-            //Timer t2;
-            //v.sort();                                                            // для вектора функции-члена сортировки нет
+            std::cout << "vector sort: ";                                       // этот блок также имеет сложность O(NlogN), но уже со своим коэффициентом
+            Timer t;                                                            // при сериях измерений врмени работы выяснилось что этот блок работает в 1.3 раза быстрее блока с set
+                                                                                // {Пример: при 200000 элемент блок отработал за 185 милисекунд}
+            srand(time(nullptr));
+            std::vector<int> v1(v.size());
+            for (int i = 0; i < v.size(); ++i) {
+                v1.push_back(v[i]);
+            }
+            std::sort(std::begin(v1), std::end(v1));
         }
-    }
-
-    {
-        std::deque<int> d = get_rand_d(1000000);                                 // блок для ОЧЕРЕДи
-        std::cout << "std::sort for DEQUE: ";
         {
-            Timer t3;                                                               // запускаем таймер
+            std::cout << "array sort: ";                                       // этот блок также имеет сложность O(NlogN), но уже со своим коэффициентом
+            Timer t;                                                            // при сериях измерений врмени работы выяснилось что этот блок работает в 3.8 раза быстрее блока с set
+                                                                                // {Пример: при 200000 элемент блок отработал за 63 милисекунд}
+            srand(time(nullptr));
+            std::array<int, 2000000> ar{};
+            for (int i = 0; i < v.size(); ++i) {
+                ar[i] = v[i];
+            }
+            std::sort(std::begin(ar), std::end(ar));
+        }                                                                       // Порогового значения при котором сменяется лидер НЕ ОБНАРУЖЕНО, дошел по количеству элементов
+    }                                                                           // уже до того, что памяти не хватало и программа падала, а очередность оставалась прежней
 
-            std::sort(std::begin(d), std::end(d));                           // стандартная сортировка std::sort
-        }                                                                          // конец работы таймера
-        std::cout << "d.sort() is absent for deque" << std::endl;
-        {
-            //Timer t3;
-            //d.sort();                                                            // для очереди функции-члена сортировки нет
-        }
-    }
-
-    {
-        std::list<int> l = get_rand_l(1000000);                               // блок для 2-связного СПИСКа
-        std::cout << "std::sort is absent for list" << std::endl;
-        {
-            //Timer t4;
-            //std::sort(std::begin(l), std::end(l));                             // с list стандартная сортировка std::sort не работает
-        }
-        std::cout << "l.sort() for LIST: ";
-        {
-            Timer t4;                                                            // запускаем таймер
-            l.sort();                                                            // функция-член сортировки у lista
-        }                                                                        // конец работы таймера
-    }
-
-    {
-        std::forward_list<int> fl = get_rand_fl(1000000);                       // блок для 1-связного СПИСКа
-        std::cout << "std::sort is absent for forward_list" << std::endl;
-        {
-            //Timer t5;
-            //std::sort(std::begin(fl), std::end(fl));                            // с forward_list стандартная сортировка std::sort не работает
-        }
-        std::cout << "fl.sort() for FORWARD_LIST: ";
-        {
-            Timer t5;                                                             // запускаем таймер
-            fl.sort();                                                            // функция-член сортировки у forward_lista
-        }                                                                         // конец работы таймера
-    }
-
-
-    //ИТОГ:
-    //1-ый - ARRAY
-    //2-ый - VECTOR
-    //3-ый - DEQUE
-    //4-ый - LIST
-    //5-ый - FORWARD_LIST
-
-    std::vector<int> p(1000);
-    printcap(p);
-
-    //p.push_back(3);                                    // количество дополнительно выделяемого объема (на запас) зависит от конкретного компилятора
-    //printcap(p);                                    // поигравшись со своим компилятором я выяснил, что он выделяет дополнительного объема ровно столько, сколько было до этого
-                                                       // То есть новый объем в 2 раза больше предыдущего (+100%)
-
-    //std::vector<int> p1(std::pow(10,2000000));
-    //printcap(p1);
-
-    p.resize(2001);                             // Если новый размер <= старого объема, то объем остается прежнимя; если старый объем < новый размер <= 2 * (старый объем), то
-    printcap(p);                                     // новый объем в 2 раза больше предыдущего, и если новый размер (size) > 2 * (старый объем), то новый объем = новому размеру
-
-    std::vector<int> p2;                                // Если мы изначално зарезервировали какой-то объем памяти (например, 7), а потом добавляем в вектор 12 элементов, то
-    p2.reserve(4);                                   // с каждым добавлением объем будем увелииваться до необхимого размера (без запаса), а если после добавлениея элементов
-    p2 = {0, 1, 2, 3, 4};                               // еще сделать resize и при этом старый объем < новый size < 2 * (старый объем), то новый объем в 2 раза больше. То есть
-    p2.resize(6);                               // в этом случае опять получаем тоже что и без reserve
-    printcap(p2);
 
     return 0;
 }
