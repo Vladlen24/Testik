@@ -14,6 +14,162 @@
 #include <string>
 #include <unordered_set>
 
+//--------------------------------------ЗАДАНИЕ №4------------------------------------------------------------
+const char* get_rand_string() {
+
+    const char* s = "";
+    srand(time(nullptr));
+    int64_t l = rand() % 10;
+    for (int i = 0; i < 10; ++i) {
+        char a(rand() % 20 + 97);
+        s += a;
+    }
+
+    return s;
+}
+
+unsigned int RSHash(const char* str, unsigned int length)
+{
+    unsigned int b    = 378551;
+    unsigned int a    = 63689;
+    unsigned int hash = 0;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash = hash * a + (*str);
+        a    = a * b;
+    }
+
+    return hash;
+}
+
+unsigned int JSHash(const char* str, unsigned int length)
+{
+    unsigned int hash = 1315423911;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash ^= ((hash << 5) + (*str) + (hash >> 2));
+    }
+
+    return hash;
+}
+
+unsigned int PJWHash(const char* str, unsigned int length)
+{
+    const unsigned int BitsInUnsignedInt = (unsigned int)(sizeof(unsigned int) * 8);
+    const unsigned int ThreeQuarters     = (unsigned int)((BitsInUnsignedInt  * 3) / 4);
+    const unsigned int OneEighth         = (unsigned int)(BitsInUnsignedInt / 8);
+    const unsigned int HighBits          =
+            (unsigned int)(0xFFFFFFFF) << (BitsInUnsignedInt - OneEighth);
+    unsigned int hash = 0;
+    unsigned int test = 0;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash = (hash << OneEighth) + (*str);
+
+        if ((test = hash & HighBits) != 0)
+        {
+            hash = (( hash ^ (test >> ThreeQuarters)) & (~HighBits));
+        }
+    }
+
+    return hash;
+}
+
+unsigned int ELFHash(const char* str, unsigned int length)
+{
+    unsigned int hash = 0;
+    unsigned int x    = 0;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash = (hash << 4) + (*str);
+
+        if ((x = hash & 0xF0000000L) != 0)
+        {
+            hash ^= (x >> 24);
+        }
+
+        hash &= ~x;
+    }
+
+    return hash;
+}
+
+unsigned int BKDRHash(const char* str, unsigned int length)
+{
+    unsigned int seed = 131; /* 31 131 1313 13131 131313 etc.. */
+    unsigned int hash = 0;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash = (hash * seed) + (*str);
+    }
+
+    return hash;
+}
+
+unsigned int SDBMHash(const char* str, unsigned int length)
+{
+    unsigned int hash = 0;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash = (*str) + (hash << 6) + (hash << 16) - hash;
+    }
+
+    return hash;
+}
+
+unsigned int DJBHash(const char* str, unsigned int length)
+{
+    unsigned int hash = 5381;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash = ((hash << 5) + hash) + (*str);
+    }
+
+    return hash;
+}
+
+unsigned int DEKHash(const char* str, unsigned int length)
+{
+    unsigned int hash = 5381;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash = ((hash << 5) ^ (hash >> 27)) ^ (*str);
+    }
+
+    return hash;
+}
+
+unsigned int APHash(const char* str, unsigned int length)
+{
+    unsigned int hash = 0xAAAAAAAA;
+    unsigned int i    = 0;
+
+    for (i = 0; i < length; ++str, ++i)
+    {
+        hash ^= ((i & 1) == 0) ? (  (hash <<  7) ^ (*str) * (hash >> 3)) :
+                (~((hash << 11) + ((*str) ^ (hash >> 5))));
+    }
+
+    return hash;
+}
+//------------------------------------------------------------------------------------------------------------
+
 template < typename T >
 void hash_combine(std::size_t & seed, const T & value) noexcept
 {
@@ -98,7 +254,7 @@ int64_t get_rand_mark() {
 
     srand(time(nullptr));
 
-    return rand() % 1000;
+    return rand() % 10;
 }
 
 class Timer
@@ -196,9 +352,7 @@ int main()
     //----------------------------------------ЗАДАНИЕ №3-----------------------------------------------------------
     std::unordered_set < Customer, Customer_Hash, Customer_Equal > customers;
 
-    //customers.insert(Customer("Ivan", 42));
-    //customers.insert(Customer("Jens", 66));
-    for (int i = 0; i < 10000000; ++i) {
+    for (int i = 0; i < 1000; ++i) {
         customers.insert(Customer(get_rand_name(), get_rand_mark()));
     }
 
@@ -206,13 +360,168 @@ int main()
 
     for (const auto & customer : customers)
     {
-        //std::cout << Customer_Hash()(customer) << std::endl;
         customers_hash.insert(Customer_Hash()(customer));
     }
 
-    std::cout << "Number of collision: " << customers.size() - customers_hash.size() << std::endl;
+    std::cout << "Number of collision (Boost): " << customers.size() - customers_hash.size() << std::endl;
 
-    //std::cout << get_rand_name() << std::endl;
+    //-------------------------------------ЗАДАНИЕ №4---------------------------------------------------------------
+    {
+        std::unordered_set<const char*> strings;                                                                        // RSHash
+        //strings.insert(get_rand_string());
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(RSHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (RSHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   // JSHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(JSHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (JSHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   //PJWHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(PJWHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (PJWHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   // ELFHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(ELFHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (ELFHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   // BKDRHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(BKDRHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (BKDRHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   // SDBMHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(SDBMHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (SDBMHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   // DJBHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(DJBHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (DJBHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   // DEKHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(DEKHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (DEKHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    {                                                                                                                   // APHash
+        std::unordered_set<const char*> strings;
+
+        for (int i = 0; i < 10000000; ++i) {
+            strings.insert(get_rand_string());
+        }
+
+        std::set<int> strings_hash;
+
+        for (const auto & s : strings)
+        {
+            strings_hash.insert(APHash(s, get_rand_mark()));
+        }
+
+        std::cout << "Number of collision (APHash): " << strings.size() - strings_hash.size() << std::endl;
+    }
+
+    // по результату проверки худшие показания у APHash (16 коллизий для 10^7 элементов), за ним идет RSHash (9 кол. для 10^7 элем.), потом ELFHash (4 кол. для 10^7 элем.),
+    // и у всех остальных нули, для них побольше элементов нужно
+    // Ради интереса отдельно рассмотрен случай с RSHash для 10^9 элементов получили 66 коллизий. Внушающее число, то есть как-то многовато
 
     return 0;
 }
