@@ -10,6 +10,96 @@
 #include <deque>
 #include <forward_list>
 #include <set>
+#include <functional>
+#include <string>
+#include <unordered_set>
+
+template < typename T >
+void hash_combine(std::size_t & seed, const T & value) noexcept
+{
+    seed ^= std::hash < T > ()(value) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+}
+
+template < typename T >
+void hash_value(std::size_t & seed, const T & value) noexcept
+{
+    hash_combine(seed, value);
+}
+
+template < typename T, typename ... Types >
+void hash_value(std::size_t & seed, const T & value, const Types & ... args) noexcept
+{
+    hash_combine(seed, value);
+    hash_value(seed, args...);
+}
+
+template < typename ... Types >
+std::size_t hash_value(const Types & ... args) noexcept
+{
+    std::size_t seed = 0;
+    hash_value(seed, args...);
+    return seed;
+}
+
+class Customer
+{
+private:
+    friend struct Customer_Hash;
+    friend struct Customer_Equal;
+
+public:
+    explicit Customer(const std::string & name, const std::size_t mark) :
+            m_name(name), m_mark(mark)
+    {}
+
+    ~Customer() noexcept = default;
+
+public:
+    friend std::ostream & operator << (std::ostream & stream, const Customer & customer)
+    {
+        return (stream << customer.m_name << "," << customer.m_mark);
+    }
+
+private:
+    std::string m_name;
+    std::size_t m_mark;
+};
+
+struct Customer_Hash
+{
+    std::size_t operator() (const Customer & customer) const noexcept
+    {
+        return hash_value(customer.m_name, customer.m_mark);
+    }
+};
+
+struct Customer_Equal
+{
+    bool operator() (const Customer & lhs, const Customer & rhs) const noexcept
+    {
+        return (lhs.m_name == rhs.m_name);
+    }
+};
+
+std::string get_rand_name() {
+
+    std::string s = "";
+    srand(time(nullptr));
+    int64_t l = rand() % 10;
+    for (int i = 0; i < 10; ++i) {
+        char a(rand() % 20 + 97);
+        s += a;
+    }
+
+    return s;
+}
+
+int64_t get_rand_mark() {
+
+    srand(time(nullptr));
+
+    return rand() % 1000;
+}
 
 class Timer
 {
@@ -102,6 +192,27 @@ int main()
 
     float y = 5.7;
     std::cout << hash_for_float(y) << std::endl;                                // результат 1085695590
+
+    //----------------------------------------ЗАДАНИЕ №3-----------------------------------------------------------
+    std::unordered_set < Customer, Customer_Hash, Customer_Equal > customers;
+
+    //customers.insert(Customer("Ivan", 42));
+    //customers.insert(Customer("Jens", 66));
+    for (int i = 0; i < 10000000; ++i) {
+        customers.insert(Customer(get_rand_name(), get_rand_mark()));
+    }
+
+    std::set<uint64_t> customers_hash;
+
+    for (const auto & customer : customers)
+    {
+        //std::cout << Customer_Hash()(customer) << std::endl;
+        customers_hash.insert(Customer_Hash()(customer));
+    }
+
+    std::cout << "Number of collision: " << customers.size() - customers_hash.size() << std::endl;
+
+    //std::cout << get_rand_name() << std::endl;
 
     return 0;
 }
