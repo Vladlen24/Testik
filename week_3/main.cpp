@@ -369,7 +369,7 @@ int main()
     {
         std::unordered_set<const char*> strings;                                                                        // RSHash
         //strings.insert(get_rand_string());
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -386,7 +386,7 @@ int main()
     {                                                                                                                   // JSHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -403,7 +403,7 @@ int main()
     {                                                                                                                   //PJWHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -420,7 +420,7 @@ int main()
     {                                                                                                                   // ELFHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -437,7 +437,7 @@ int main()
     {                                                                                                                   // BKDRHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -454,7 +454,7 @@ int main()
     {                                                                                                                   // SDBMHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -471,7 +471,7 @@ int main()
     {                                                                                                                   // DJBHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -488,7 +488,7 @@ int main()
     {                                                                                                                   // DEKHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
@@ -505,7 +505,7 @@ int main()
     {                                                                                                                   // APHash
         std::unordered_set<const char*> strings;
 
-        for (int i = 0; i < 10000000; ++i) {
+        for (int i = 0; i < 100000000; ++i) {
             strings.insert(get_rand_string());
         }
 
