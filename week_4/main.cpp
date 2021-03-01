@@ -1,6 +1,17 @@
 #include <iostream>
+#include <list>
+#include <numeric>
+#include <vector>
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+
+    std::vector<int> v(10);
+    std::iota(v.begin(), v.end(), 1);
+
+    for (auto elem: v) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+
     return 0;
 }
