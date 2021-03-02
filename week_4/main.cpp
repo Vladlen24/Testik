@@ -82,6 +82,12 @@ int main() {
     transform (v.begin(), v.end(),             // источник
                 v.begin(), [](int x){return x*x;});
     print(v, "Квадраты: ");
+//-----------------------------------------------------TASK 9-----------------------------------------------------------
+    std::vector<int> v2(v.size());
+    //std::default_random_engine dre2;        // можно и генератором случайных чисел
+    std::generate(v.begin(), v.end(),       // интервал
+                 rand);                     // источник случайности
+    print(v, "Послед №2: ");
 
     return 0;
 }
