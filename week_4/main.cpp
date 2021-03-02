@@ -33,7 +33,12 @@ int main() {
     pos = std::unique(v.begin(), v.end());
     v.erase(pos, v.end());
     print(v, "Без дубликатов: ");
-    std::cout << std::endl;
+//-----------------------------------------------------TASK 5-----------------------------------------------------------
+    int numb = 0;
+    numb = std::count_if(v.begin(), v.end(),
+                         [](int x){return (x % 2) == 1;});
+    std::cout << "Количество нечетных: " << numb;
+    
 
     return 0;
 }
