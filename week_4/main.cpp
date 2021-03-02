@@ -36,9 +36,11 @@ int main() {
 //-----------------------------------------------------TASK 5-----------------------------------------------------------
     int numb = 0;
     numb = std::count_if(v.begin(), v.end(),
-                         [](int x){return (x % 2) == 1;});
-    std::cout << "Количество нечетных: " << numb;
-    
+                         [](int x){return (std::abs(x) % 2) == 1;});
+    std::cout << "Количество нечетных: " << numb << std::endl;
+//-----------------------------------------------------TASK 6-----------------------------------------------------------
+    std::cout << "minimum: " << *min_element(v.begin(), v.end()) << std::endl;
+    std::cout << "maximum: " << *max_element(v.begin() ,v.end()) << std::endl;
 
     return 0;
 }
