@@ -28,6 +28,7 @@ int main() {
                  dre);                     // источник случайности
     print(v, "Перетасовка: ");
 //-----------------------------------------------------TASK 4-----------------------------------------------------------
+    std::sort(v.begin(), v.end());
     std::vector<int>::iterator pos;
     pos = std::unique(v.begin(), v.end());
     v.erase(pos, v.end());
