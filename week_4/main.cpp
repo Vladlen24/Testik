@@ -12,6 +12,22 @@ void print (std::vector<int> &v, std::string s) {
          std::ostream_iterator<int> (std::cout, " "));
     std::cout << std::endl;
 }
+bool isSimple(int a)
+{
+    bool f;
+    int d;
+    f = a <= 1;
+    d = 2;
+    while ((!f) && (d*d <= a)){
+        if (a % d == 0){
+            f = true;
+        }
+        else {
+            d++;
+        }
+    }
+    return !f;
+}
 
 int main() {
 //-----------------------------------------------------TASK 1-----------------------------------------------------------
@@ -41,6 +57,27 @@ int main() {
 //-----------------------------------------------------TASK 6-----------------------------------------------------------
     std::cout << "minimum: " << *min_element(v.begin(), v.end()) << std::endl;
     std::cout << "maximum: " << *max_element(v.begin() ,v.end()) << std::endl;
+//-----------------------------------------------------TASK 7-----------------------------------------------------------
+    auto pos1 = std::find_if(v.cbegin(), v.cend(), [](int a){
+        bool f;
+        int d;
+        f = a <= 1;
+        d = 2;
+        while ((!f) && (d*d <= a)){
+            if (a % d == 0){
+                f = true;
+            }
+            else {
+                d++;
+            }
+        }
+        return !f;});
+    if (pos1 != v.end()) {
+        std::cout << *pos1 << " - простое число" << std::endl;
+    }
+    else {
+        std::cout << *pos1 << "Простое число не найдено" << std::endl;
+    }
 
     return 0;
 }
