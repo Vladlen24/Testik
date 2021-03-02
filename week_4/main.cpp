@@ -100,9 +100,15 @@ int main() {
     replace_if (v2.begin(), v2.end(),                // range
                 bind2nd(std::less<int>(), bound),    // criterion for replacement
                 1);*/
-    fill(v2.begin(), std::next(v2.begin(), 3),            // источник
+    int k = 6;
+    fill(v2.begin(), std::next(v2.begin(), k),            // источник
              1);                                            // новое значение
-    print(v2, "Замена первых 3-х: ");
+    print(v2, "Замена первых k: ");
+//-----------------------------------------------------TASK 12----------------------------------------------------------
+    std::vector<int> v3(v.size());
+    transform(v.begin(), v.end(), v2.begin(), v3.begin(), std::minus<int>());
+    print(v3, "После №3: ");
+
 
     return 0;
 }
