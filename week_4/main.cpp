@@ -55,8 +55,10 @@ int main() {
                          [](int x){return (std::abs(x) % 2) == 1;});
     std::cout << "Количество нечетных: " << numb << std::endl;
 //-----------------------------------------------------TASK 6-----------------------------------------------------------
-    std::cout << "minimum: " << *min_element(v.begin(), v.end()) << std::endl;
-    std::cout << "maximum: " << *max_element(v.begin() ,v.end()) << std::endl;
+    //std::cout << "minimum: " << *min_element(v.begin(), v.end()) << std::endl;
+    //std::cout << "maximum: " << *max_element(v.begin() ,v.end()) << std::endl;
+    const auto [min, max] = std::minmax_element(v.begin(), v.end());
+    std::cout << "min = " << *min << ", max = " << *max << std::endl;
 //-----------------------------------------------------TASK 7-----------------------------------------------------------
     auto pos1 = std::find_if(v.cbegin(), v.cend(), [](int a){
         bool f;
