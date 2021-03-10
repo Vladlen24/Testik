@@ -7,6 +7,7 @@
 #include <locale>
 #include <string>
 #include <boost/locale.hpp>
+#include <iomanip>
 #include <iostream>
 
 const long double KOEF{73};             // коэффициент перевода доллара в рубли
@@ -35,9 +36,10 @@ std::u16string convert_utf8_to_utf16(const std::string & string)
 
 }
 
-int main()
-{
-   /* long double v1;
+int main() {
+
+//---------------------------------------------------------TASK №1------------------------------------------------------
+    long double v1;
     std::cin.imbue(std::locale("en_US.UTF-8"));                                         // конвертация долларов в рубли
     std::cin >> std::get_money(v1,false);
     std::cout.imbue(std::locale("ru_RU.UTF-8"));
@@ -49,10 +51,10 @@ int main()
     std::cin >> std::get_money(v2, false);
     std::cout.imbue(std::locale("en_US.UTF-8"));
     std::cout << std::showbase << "RUB -> USD: " << std::put_money(v2 / KOEF)
-              << " or " << std::put_money(v2 / KOEF, true) << '\n';*/
+              << " or " << std::put_money(v2 / KOEF, true) << '\n';
 
 
-//---------------------------------------------------------TASK #2------------------------------------------------------
+//---------------------------------------------------------TASK №2------------------------------------------------------
 // так как я раюотаю в Linux, то в консоле по умолчанию UTF-8, поэтому я не делал перевод из cp1251 в utf-8, но это вообще не сложно, так что если надо могу сделать
     //std::string a{"привет ребята, как делишки"};
     std::string str;
