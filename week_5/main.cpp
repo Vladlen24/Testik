@@ -88,7 +88,7 @@ int main()
     std::regex reg(R"((\w+)@(\w+)\.((?:com|in|edu)))");
 
     std::sregex_iterator beg(data.cbegin(),data.cend(),reg);
-    std::sregex_iterator end;
+    std::sregex_iterator end;                                                           // в результате будет только два первых e-mail т.к. последний имеет недопустимый домен (.www)
     for_each (beg,end,[](const std::smatch& m) {
         std::cout << "match:  " << m.str() << std::endl;
         std::cout << " name:   " << m.str(1) << std::endl;
