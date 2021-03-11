@@ -3,10 +3,21 @@
 #endif
 
 #include <map>
+#include <bitset>
+#include <chrono>
 #include <codecvt>
+#include <cstddef>
+#include <cstdlib>
+#include <ctime>
+#include <exception>
+#include <fstream>
+#include <iterator>
 #include <locale>
+#include <stdexcept>
 #include <string>
+#include <regex>
 #include <boost/locale.hpp>
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 
@@ -36,9 +47,8 @@ std::u16string convert_utf8_to_utf16(const std::string & string)
 
 }
 
-int main() {
-
-//---------------------------------------------------------TASK №1------------------------------------------------------
+int main()
+{
     long double v1;
     std::cin.imbue(std::locale("en_US.UTF-8"));                                         // конвертация долларов в рубли
     std::cin >> std::get_money(v1,false);
@@ -54,7 +64,7 @@ int main() {
               << " or " << std::put_money(v2 / KOEF, true) << '\n';
 
 
-//---------------------------------------------------------TASK №2------------------------------------------------------
+//---------------------------------------------------------TASK #2------------------------------------------------------
 // так как я раюотаю в Linux, то в консоле по умолчанию UTF-8, поэтому я не делал перевод из cp1251 в utf-8, но это вообще не сложно, так что если надо могу сделать
     //std::string a{"привет ребята, как делишки"};
     std::string str;
@@ -72,7 +82,18 @@ int main() {
 
     std::string b = boost::locale::conv::utf_to_utf < char, char32_t > (newstr);            // преобразуем UTF-32 назад в UTF-8
     std::cout << b << std::endl;
+//---------------------------------------------------------TASK #3------------------------------------------------------
+    std::string data = "dssf23./7 vladlen24@gmail.com frgg/f34.f7_f dssf23./7 statev@phystech.edu frgg/f34.f7_f ponchik@makaronchik.www";
 
+    std::regex reg(R"((\w+)@(\w+)\.((?:com|in|edu)))");
+
+    std::sregex_iterator beg(data.cbegin(),data.cend(),reg);
+    std::sregex_iterator end;
+    for_each (beg,end,[](const std::smatch& m) {
+        std::cout << "match:  " << m.str() << std::endl;
+        std::cout << " name:   " << m.str(1) << std::endl;
+        std::cout << " domen: " << m.str(2) << "." << m.str(3) << std::endl;
+    });
 
 
     return 0;
