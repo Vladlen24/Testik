@@ -85,10 +85,10 @@ int main()
 //---------------------------------------------------------TASK #3------------------------------------------------------
     std::string data = "dssf23./7 vladlen24@gmail.com frgg/f34.f7_f dssf23./7 statev@phystech.edu frgg/f34.f7_f ponchik@makaronchik.www";
 
-    std::regex reg(R"((\w+)@(\w+)\.((?:com|in|edu)))");
+    std::regex reg(R"((\w+)@(\w+)\.(\w+))");
 
     std::sregex_iterator beg(data.cbegin(),data.cend(),reg);
-    std::sregex_iterator end;                                                           // в результате будет только два первых e-mail т.к. последний имеет недопустимый домен (.www)
+    std::sregex_iterator end;
     for_each (beg,end,[](const std::smatch& m) {
         std::cout << "match:  " << m.str() << std::endl;
         std::cout << " name:   " << m.str(1) << std::endl;
