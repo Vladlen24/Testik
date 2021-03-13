@@ -83,7 +83,7 @@ int main()
     std::string b = boost::locale::conv::utf_to_utf < char, char32_t > (newstr);            // преобразуем UTF-32 назад в UTF-8
     std::cout << b << std::endl;
 //---------------------------------------------------------TASK #3------------------------------------------------------
-    std::string data = "dssf23./7 vladlen24@gmail.com frgg/f34.f7_f dssf23./7 statev@phystech.edu frgg/f34.f7_f ponchik@makaronchik.www";
+    std::string data = "dssf23./7 vladlen24@gmail.com frgg/f34.f7_f dssf23./7 statev@phystech.edu frgg/f34.f7_f ponchik@makaronchik.www.fgfh";
 
     std::regex reg(R"((\w+)@(\w+)\.(\w+))");
 
