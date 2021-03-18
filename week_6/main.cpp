@@ -1,7 +1,16 @@
-#include <iostream>
+#include <iostream> //
+// comment
+int main(/*comment*/)
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-    //sfdfdg
-    return 0;
-}
+{ /**/
+
+    std::cout << "Hello, \"\"M\" /* commented */ world! // again :)" << std::endl; // comment
+    // comment
+
+    int x; /* comment_1
+	comment_2 */
+
+    int y;
+
+} //
+/**/
