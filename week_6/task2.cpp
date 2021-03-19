@@ -6,7 +6,9 @@ int main(){
 
     std::ifstream file(filename);
 
-    int str_size = 5;
+    std::string s;
+    getline(file, s, '\n');
+    int str_size = s.size() + 1;
     int n;
     std::cin >> n;
     file.seekg((n-1)*str_size);
