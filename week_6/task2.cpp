@@ -1,12 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 int main(){
     const std::string& filename = "test2.txt";
 
     std::ifstream file(filename);
 
-    std::string s;
+    std::vector<std::string> s(file.);
     getline(file, s, '\n');
     int str_size = s.size() + 1;
     int n;
