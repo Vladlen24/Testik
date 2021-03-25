@@ -9,9 +9,10 @@
 #include <numeric>
 #include <atomic>
 #include <cstdint>
+#include <future>
 
 static constexpr size_t NUMBER = 8;
-static constexpr size_t THREAD_ITTERS = 4000000;
+static constexpr size_t THREAD_ITTERS = 40000000;
 
 class Timer
 {
@@ -61,18 +62,10 @@ int main() {
         std::cout << "Threads" << std::endl;
         Timer t;
         std::vector<double> result;
-        std::vector<std::thread> threads;
-        std::mutex m;
         for (int i = 0; i < NUMBER; ++i) {
             size_t cnt = THREAD_ITTERS;
-            threads.emplace_back([&result, &m, cnt]() {
-                double pi = MonteCarlo(cnt);
-                std::lock_guard<std::mutex> lk(m);
-                result.emplace_back(pi);
-            });
-        }
-        for (auto& th : threads) {
-            th.join();
+            std::future<double> fu = std::async(MonteCarlo, cnt);
+            result.emplace_back(fu.get());
         }
         std::cout << std::accumulate(result.begin(), result.end(),0.0) / result.size() << std::endl;
     }
@@ -93,6 +86,8 @@ int main() {
     //мы бы имели выиграш по врмемни, но в этой программе у нас есть блокровка, так что есть моменты
     //когда потокам приходится ждать друг друга в порядке "живой очереди" ( прям как в больнице:) )
     //так как они работают с общей областью памяти
+
+    //но после написания через async и future скорости работы последовательной и итеративной уравнялись с точностью до 0.5%
 
     return 0;
 }
