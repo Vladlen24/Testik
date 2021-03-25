@@ -57,14 +57,37 @@ double MonteCarlo(size_t iters) {
 
 int main() {
 
-    //паралельная версия
+    //паралельная версия через vector<future<>> ООООЧЕНЬ МЕДЛЕННО
+    /*{
+        std::cout << "Threads" << std::endl;
+        Timer t;
+        std::vector<double> result;
+        std::vector<std::future<double>> fus;
+        for (int i = 0; i < NUMBER; ++i) {
+            size_t cnt = THREAD_ITTERS;
+            fus.emplace_back(std::async(MonteCarlo, cnt));
+            //result.emplace_back(fu.get());
+        }
+        result.reserve(fus.size());
+        for (auto& fu: fus) {
+            result.emplace_back(fu.get());
+        }
+        std::cout << std::accumulate(result.begin(), result.end(),0.0) / result.size() << std::endl;
+    }*/
+
+    //паралельная версия просто через future и async     НОРМ ПО СКОРОСТИ
     {
         std::cout << "Threads" << std::endl;
         Timer t;
         std::vector<double> result;
+        std::vector<std::future<double>> fus;
         for (int i = 0; i < NUMBER; ++i) {
             size_t cnt = THREAD_ITTERS;
-            std::future<double> fu = std::async(MonteCarlo, cnt);
+            fus.emplace_back(std::async(MonteCarlo, cnt));
+            //result.emplace_back(fu.get());
+        }
+        result.reserve(fus.size());
+        for (auto& fu: fus) {
             result.emplace_back(fu.get());
         }
         std::cout << std::accumulate(result.begin(), result.end(),0.0) / result.size() << std::endl;
@@ -77,17 +100,7 @@ int main() {
         std::cout << MonteCarlo(THREAD_ITTERS * NUMBER) << std::endl;
     }
 
-    //но конкретно в этой программе потоки (паралельн. версия.) работают дольше чем (последов.)
-    //Полагаю это связано с тем что сам по себе алгоритм Монте-Карло достаточно несложный,
-    //но при этом хоть я и запускаю паралельную программу на 8 потоках (по потоку на ядро)
-    //еще работает около 1000 системных потоков. Получается наши вклиниваются между ними и
-    //хоч не хоч, а контекстного переключения не избежать
-    //Т.е. если мы имеем дело с задачей где потоки могли бы выполняять что-то в фоновом режиме
-    //мы бы имели выиграш по врмемни, но в этой программе у нас есть блокровка, так что есть моменты
-    //когда потокам приходится ждать друг друга в порядке "живой очереди" ( прям как в больнице:) )
-    //так как они работают с общей областью памяти
-
-    //но после написания через async и future скорости работы последовательной и итеративной уравнялись с точностью до 0.5%
+    //после написания через async и future скорости работы последовательной и итеративной уравнялись с точностью до 0.5%
 
     return 0;
 }
