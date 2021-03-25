@@ -12,7 +12,7 @@
 #include <future>
 
 static constexpr size_t NUMBER = 8;
-static constexpr size_t THREAD_ITTERS = 40000000;
+static constexpr size_t THREAD_ITTERS = 400000;
 
 class Timer
 {
@@ -58,36 +58,30 @@ double MonteCarlo(size_t iters) {
 int main() {
 
     //паралельная версия через vector<future<>> ООООЧЕНЬ МЕДЛЕННО
-    /*{
-        std::cout << "Threads" << std::endl;
+    {
+        std::cout << "Threads (vector)" << std::endl;
         Timer t;
         std::vector<double> result;
         std::vector<std::future<double>> fus;
         for (int i = 0; i < NUMBER; ++i) {
             size_t cnt = THREAD_ITTERS;
             fus.emplace_back(std::async(MonteCarlo, cnt));
-            //result.emplace_back(fu.get());
         }
         result.reserve(fus.size());
         for (auto& fu: fus) {
             result.emplace_back(fu.get());
         }
         std::cout << std::accumulate(result.begin(), result.end(),0.0) / result.size() << std::endl;
-    }*/
+    }
 
     //паралельная версия просто через future и async     НОРМ ПО СКОРОСТИ
     {
         std::cout << "Threads" << std::endl;
         Timer t;
         std::vector<double> result;
-        std::vector<std::future<double>> fus;
         for (int i = 0; i < NUMBER; ++i) {
             size_t cnt = THREAD_ITTERS;
-            fus.emplace_back(std::async(MonteCarlo, cnt));
-            //result.emplace_back(fu.get());
-        }
-        result.reserve(fus.size());
-        for (auto& fu: fus) {
+            std::future<double> fu = std::async(MonteCarlo, cnt);
             result.emplace_back(fu.get());
         }
         std::cout << std::accumulate(result.begin(), result.end(),0.0) / result.size() << std::endl;
@@ -101,6 +95,8 @@ int main() {
     }
 
     //после написания через async и future скорости работы последовательной и итеративной уравнялись с точностью до 0.5%
+
+    //как оказалось версия через вектор фьючеров очень медленная
 
     return 0;
 }
