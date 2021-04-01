@@ -12,7 +12,7 @@
 #include <future>
 
 static constexpr size_t NUMBER = 8;
-static constexpr size_t THREAD_ITTERS = 400000;
+static constexpr size_t THREAD_ITTERS = 40000000;
 
 class Timer
 {
