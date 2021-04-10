@@ -9,7 +9,6 @@ using namespace boost::interprocess;
 
 int main()
 {
-    shared_memory_object::remove("shm");
     managed_shared_memory managed_shm{open_or_create, "shm", 1024};
     int *i = managed_shm.find_or_construct<int>("Integer")(0);
     string *j = managed_shm.find_or_construct<string>("Parametr1")();
@@ -23,10 +22,10 @@ int main()
     while (*i < 10)
     {
 
-        std::cout << "Message for you: " << *k << std::endl;
+        std::cout << "Message for you: " << *j << std::endl;
         std::cout << "Write your message: " << std::endl;
         std::cin >> a;
-        *j = a;
+        *k = a;
 
         ++(*i);
         cnd->notify_all();
