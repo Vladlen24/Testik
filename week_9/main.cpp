@@ -24,13 +24,17 @@ int main()
     {
 
         std::cout << "Message for you: " << *k << std::endl;
+        cnd->notify_all();
+        cnd->wait(lock);
+
         std::cout << "Write your message: " << std::endl;
         std::cin >> a;
         *j = a;
-
         ++(*i);
         cnd->notify_all();
         cnd->wait(lock);
+
+
     }
     cnd->notify_all();
     shared_memory_object::remove("shm");

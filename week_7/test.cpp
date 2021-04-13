@@ -23,10 +23,12 @@ int main()
     {
 
         std::cout << "Message for you: " << *j << std::endl;
+        cnd->notify_all();
+        cnd->wait(lock);
+
         std::cout << "Write your message: " << std::endl;
         std::cin >> a;
         *k = a;
-
         ++(*i);
         cnd->notify_all();
         cnd->wait(lock);
