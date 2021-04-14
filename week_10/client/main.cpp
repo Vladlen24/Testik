@@ -55,6 +55,7 @@ int main(int argc, char ** argv)
             }
         });
 
+
         std::thread thread_write ([&](){
             std::string data;
             while (1 > 0) {
