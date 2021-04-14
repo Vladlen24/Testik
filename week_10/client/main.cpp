@@ -45,23 +45,23 @@ int main(int argc, char ** argv)
         std::thread thread_read ([&](){
             bool f = true;
             while (f) {
-                if (read_data_until(socket) == "exit"){
-                    f = false;
-                    socket.close();
+                std::string message = read_data_until(socket);
+                if (message == "exit"){
+                    std::cout << "+" << std::endl;
                 }
                 else {
-                    std::cout << read_data_until(socket) << std::endl;
+                    std::cout << message << std::endl;
                 }
             }
         });
 
         std::thread thread_write ([&](){
             std::string data;
-            while (socket.is_open()) {
+            while (1 > 0) {
                 std::cin >> data;
                 write_data(socket, data);
             }
-            socket.close();
+            //socket.close();
         });
 
         thread_read.join();

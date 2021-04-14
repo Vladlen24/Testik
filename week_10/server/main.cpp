@@ -54,7 +54,7 @@ int main(int argc, char ** argv)
         acceptor.accept(socket);
 
         std::thread thread_read ([&](){
-            while (socket.is_open()) {
+            while (1 > 0) {
                 std::cout << read_data_until(socket) << std::endl;
             }
         });
@@ -64,16 +64,12 @@ int main(int argc, char ** argv)
             std::string data;
             while (f) {
                 std::cin >> data;
-                if (data == "exit") {
-                    f = false;
-                    write_data(socket, data);
-                    socket.close();
+                if (data == "exit!") {
+                    std::cout << "+" << std::endl;
                 }
-                else {
-                    write_data(socket, data);
-                }
+                write_data(socket, data);
             }
-            socket.close();
+            //socket.close();
         });
 
         thread_read.join();
