@@ -44,9 +44,10 @@ int main(int argc, char ** argv)
 
         std::thread thread_read ([&](){
             bool f = true;
-            while (f) {
+            while (socket.is_open()) {
                 std::string message = read_data_until(socket);
                 if (message == "exit"){
+                    socket.close();
                     std::cout << "+" << std::endl;
                 }
                 else {
@@ -58,7 +59,7 @@ int main(int argc, char ** argv)
 
         std::thread thread_write ([&](){
             std::string data;
-            while (1 > 0) {
+            while (socket.is_open()) {
                 std::cin >> data;
                 write_data(socket, data);
             }
