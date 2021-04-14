@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <cstring>
 #include <boost/asio.hpp>
 
 void write_data(boost::asio::ip::tcp::socket & socket, std::string data)
@@ -45,25 +45,33 @@ int main(int argc, char ** argv)
         std::thread thread_read ([&](){
             bool f = true;
             while (socket.is_open()) {
-                std::string message = read_data_until(socket);
-                if (message == "exit"){
+                std::string s = read_data_until(socket);
+                if (s == "exit"){
                     socket.close();
                     std::cout << "+" << std::endl;
                 }
                 else {
-                    std::cout << message << std::endl;
+                    char str[100];
+                    strcpy(str, s.c_str());
+                    std::string name = strtok (str,":");
+                    std::string message = strtok (NULL, ":");
+                    std::cout << "Message from " << name << ": " << message << std::endl;
                 }
             }
         });
 
 
         std::thread thread_write ([&](){
+            bool f = true;
             std::string data;
             while (socket.is_open()) {
                 std::cin >> data;
+                if (data == "exit!") {
+                    socket.close();
+                    std::cout << "+" << std::endl;
+                }
                 write_data(socket, data);
             }
-            //socket.close();
         });
 
         thread_read.join();

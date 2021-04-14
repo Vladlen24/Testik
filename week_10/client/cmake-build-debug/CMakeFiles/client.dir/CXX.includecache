@@ -9,6 +9,8 @@
 /home/vladlen/Testik/week_10/client/main.cpp
 iostream
 -
+cstring
+-
 boost/asio.hpp
 -
 
