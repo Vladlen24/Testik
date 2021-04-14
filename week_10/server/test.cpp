@@ -1,29 +1,14 @@
 #include <iostream>
-#include <thread>
+#include <cstring>
 
-int main()
+int main ()
 {
-    std::thread first ([](){
-        std::cout << "P" << "i" << "n" << "g" << std::endl;
-    });
-    std::thread second ([](){
-        std::cout << "P" << "o" << "n" << "g" << std::endl;
-    });
-
-    first.join();
-    second.join();
-
-    std::string value;
-    bool f = true;
-    while (f){
-        std::cin >> value;
-        if (value == "exit") {
-            f = false;
-        }
-        else {
-            std::cout << "work" << std::endl;
-        }
-    }
-
+    std::string s;
+    std::cin >> s;
+    char str[100];
+    strcpy(str, s.c_str());
+    std::string name = strtok (str,":!");
+    std::string message = strtok (NULL, ":!");
+    std::cout << name << " -- " << message;
     return 0;
 }

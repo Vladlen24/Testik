@@ -54,8 +54,20 @@ int main(int argc, char ** argv)
         acceptor.accept(socket);
 
         std::thread thread_read ([&](){
+            bool f = true;
             while (socket.is_open()) {
-                std::cout << read_data_until(socket) << std::endl;
+                std::string s = read_data_until(socket);
+                if (s == "exit"){
+                    socket.close();
+                    std::cout << "+" << std::endl;
+                }
+                else {
+                    char str[100];
+                    strcpy(str, s.c_str());
+                    std::string name = strtok (str,":");
+                    std::string message = strtok (NULL, ":");
+                    std::cout << "Message from " << name << ": " << message << std::endl;
+                }
             }
         });
 
