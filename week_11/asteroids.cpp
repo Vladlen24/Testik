@@ -2,6 +2,8 @@
 #include <time.h>
 #include <list>
 #include <cmath>
+#include <iostream>
+
 using namespace sf;
 
 const int W = 1200;
@@ -162,6 +164,8 @@ class player: public Entity
 
     if (x>W) x=0; if (x<0) x=W;
     if (y>H) y=0; if (y<0) y=H;
+
+    if (!life) std::cout << "GAME OVER" << std::endl;
    }
 
 };
@@ -206,6 +210,7 @@ int main()
 
 
     std::list<Entity*> entities;
+    int k = 10 ;
 
     for(int i=0;i<25;i++)
     {
@@ -271,6 +276,9 @@ int main()
        if ( isCollide(a,b) )
            {
             b->life=false;
+            --k;
+            std::cout << k << std::endl;
+            if (k == 0) a->life=false;
 
             Entity *e = new Entity();
             e->settings(sExplosion_ship,a->x,a->y);
