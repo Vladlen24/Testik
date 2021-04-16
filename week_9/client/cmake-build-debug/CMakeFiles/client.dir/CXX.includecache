@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/vladlen/Testik/week_9/client/main.cpp
+boost/interprocess/sync/scoped_lock.hpp
+-
+iostream
+-
+boost/interprocess/containers/string.hpp
+-
+

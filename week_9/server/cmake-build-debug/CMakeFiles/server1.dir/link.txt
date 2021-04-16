@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11 -pthread -g CMakeFiles/server1.dir/main.cpp.o -o server1  -lrt 

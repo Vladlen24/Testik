@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++11 -pthread -g CMakeFiles/client1.dir/main.cpp.o -o client1  -lrt 

@@ -3,6 +3,7 @@
 #include <list>
 #include <cmath>
 #include <iostream>
+#include <SFML/Graphics/Text.hpp>
 
 using namespace sf;
 

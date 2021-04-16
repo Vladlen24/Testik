@@ -2,9 +2,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    sf::RenderWindow window(sf::VideoMode(700, 300), "SFML works!");
 
     while (window.isOpen())
     {
@@ -15,8 +13,21 @@ int main()
                 window.close();
         }
 
-        window.clear();
-        window.draw(shape);
+        window.clear(sf::Color(250,220,100,50));
+
+        sf::Texture texture;
+
+        // Подгружаем нашу текстуру из файла texture.png
+        texture.loadFromFile("/home/vladlen/Рабочий стол/pdf/Врата/vrata-2.jpg");
+
+        // Создаем спрайт и устанавливаем ему нашу текстуру
+        sf::Sprite sprite(texture);
+
+        //sprite.setColor(sf::Color::Green);
+
+        // Отрисовка спрайта
+        window.draw(sprite);
+
         window.display();
     }
 
