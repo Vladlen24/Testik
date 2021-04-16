@@ -5,6 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
-add_executable(week_11 main.cpp)
+add_executable(week_11 asteroids.cpp)
 
 target_link_libraries(week_11 sfml-graphics sfml-audio)
