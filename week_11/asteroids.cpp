@@ -170,7 +170,7 @@ class player: public Entity
     if (x>W) x=0; if (x<0) x=W;
     if (y>H) y=0; if (y<0) y=H;
 
-    if (!life) std::cout << "GAME OVER" << std::endl;
+    //if (!life) std::cout << "GAME OVER" << std::endl;
    }
 
 };
@@ -215,7 +215,8 @@ int main()
 
 
     std::list<Entity*> entities;
-    int k = 3;
+    int k = 20;
+    int points = 0;
 
     for(int i=0;i<25;i++)
     {
@@ -261,6 +262,9 @@ int main()
                     a->life=false;
                     b->life=false;
 
+                    points+=10;
+                    std::cout << "Score: " << points << " points!" << std::endl;
+
                     Entity *e = new Entity();
                     e->settings(sExplosion,a->x,a->y);
                     e->name="explosion";
@@ -282,7 +286,7 @@ int main()
                         {
                             b->life=false;
                             --k;
-                            std::cout << k << std::endl;
+                            //std::cout << k << std::endl;
                             if (k == 0) a->life=false;
 
                             Entity *e = new Entity();
@@ -336,15 +340,33 @@ int main()
         text.setStyle(sf::Text::Bold);
         text.setPosition(420, 350);
 
+        sf::Text score;
+        score.setFont(font);
+        score.setString("Score: ");
+        score.setCharacterSize(30);
+        score.setFillColor(sf::Color::Red);
+        score.setStyle(sf::Text::Bold);
+        //score.setPosition(420, 350);
+
+        sf::Text score_num;
+        score_num.setFont(font);
+        score_num.setString(std::to_string(points));
+        score_num.setCharacterSize(30);
+        score_num.setFillColor(sf::Color::Red);
+        score_num.setStyle(sf::Text::Bold);
+        score_num.setPosition(100, 0);
+
         //////draw//////
         app.draw(background);
         for(auto i:entities) i->draw(app);
+        app.draw(score);
+        app.draw(score_num);
         if (k == 0) {
             app.draw(text);
         }
         app.display();
         if (k == 0) {
-           sleep(2);
+            sleep(2);
         }
     }
 
