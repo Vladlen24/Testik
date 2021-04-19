@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 int main()
 {
@@ -15,18 +16,19 @@ int main()
 
         window.clear(sf::Color(250,220,100,50));
 
-        sf::Texture texture;
-
-        // Подгружаем нашу текстуру из файла texture.png
-        texture.loadFromFile("/home/vladlen/Рабочий стол/pdf/Врата/vrata-2.jpg");
-
-        // Создаем спрайт и устанавливаем ему нашу текстуру
-        sf::Sprite sprite(texture);
-
-        //sprite.setColor(sf::Color::Green);
-
-        // Отрисовка спрайта
-        window.draw(sprite);
+        sf::Font font;
+        font.loadFromFile("arial.ttf");
+        if (!font.loadFromFile("arial.ttf"))
+        {
+            std::cout << "Error..." << std::endl;
+        }
+        sf::Text text;
+        text.setFont(font);
+        text.setString("Hello world");
+        text.setCharacterSize(24);
+        text.setFillColor(sf::Color::Red);
+        text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+        window.draw(text);
 
         window.display();
     }

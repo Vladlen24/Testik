@@ -1,11 +1,15 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <time.h>
 #include <list>
 #include <cmath>
 #include <iostream>
-#include <SFML/Graphics/Text.hpp>
+#include <chrono>
+#include <thread>
+#include <unistd.h>
 
 using namespace sf;
+using namespace std::chrono_literals;
 
 const int W = 1200;
 const int H = 800;
@@ -211,7 +215,7 @@ int main()
 
 
     std::list<Entity*> entities;
-    int k = 10 ;
+    int k = 3;
 
     for(int i=0;i<25;i++)
     {
@@ -242,86 +246,106 @@ int main()
               }
         }
 
-    if (Keyboard::isKeyPressed(Keyboard::Right)) p->angle+=3;
-    if (Keyboard::isKeyPressed(Keyboard::Left))  p->angle-=3;
-    if (Keyboard::isKeyPressed(Keyboard::Up)) p->thrust=true;
-    else p->thrust=false;
+        if (Keyboard::isKeyPressed(Keyboard::Right)) p->angle+=3;
+        if (Keyboard::isKeyPressed(Keyboard::Left))  p->angle-=3;
+        if (Keyboard::isKeyPressed(Keyboard::Up)) p->thrust=true;
+        else p->thrust=false;
 
 
-    for(auto a:entities)
-     for(auto b:entities)
-     {
-      if (a->name=="asteroid" && b->name=="bullet")
-       if ( isCollide(a,b) )
-           {
-            a->life=false;
-            b->life=false;
-
-            Entity *e = new Entity();
-            e->settings(sExplosion,a->x,a->y);
-            e->name="explosion";
-            entities.push_back(e);
-
-
-            for(int i=0;i<2;i++)
+        for(auto a:entities)
+            for(auto b:entities)
             {
-             if (a->R==15) continue;
-             Entity *e = new asteroid();
-             e->settings(sRock_small,a->x,a->y,rand()%360,15);
-             entities.push_back(e);
+                if (a->name=="asteroid" && b->name=="bullet")
+                if ( isCollide(a,b) )
+                {
+                    a->life=false;
+                    b->life=false;
+
+                    Entity *e = new Entity();
+                    e->settings(sExplosion,a->x,a->y);
+                    e->name="explosion";
+                    entities.push_back(e);
+
+
+                    for(int i=0;i<2;i++)
+                    {
+                        if (a->R==15) continue;
+                        Entity *e = new asteroid();
+                        e->settings(sRock_small,a->x,a->y,rand()%360,15);
+                        entities.push_back(e);
+                    }
+
+                }
+
+                if (a->name=="player" && b->name=="asteroid")
+                    if ( isCollide(a,b) )
+                        {
+                            b->life=false;
+                            --k;
+                            std::cout << k << std::endl;
+                            if (k == 0) a->life=false;
+
+                            Entity *e = new Entity();
+                            e->settings(sExplosion_ship,a->x,a->y);
+                            e->name="explosion";
+                            entities.push_back(e);
+
+                            p->settings(sPlayer,W/2,H/2,0,20);
+                            p->dx=0; p->dy=0;
+                        }
             }
 
-           }
 
-      if (a->name=="player" && b->name=="asteroid")
-       if ( isCollide(a,b) )
-           {
-            b->life=false;
-            --k;
-            std::cout << k << std::endl;
-            if (k == 0) a->life=false;
-
-            Entity *e = new Entity();
-            e->settings(sExplosion_ship,a->x,a->y);
-            e->name="explosion";
-            entities.push_back(e);
-
-            p->settings(sPlayer,W/2,H/2,0,20);
-            p->dx=0; p->dy=0;
-           }
-     }
+        if (p->thrust)  p->anim = sPlayer_go;
+        else   p->anim = sPlayer;
 
 
-    if (p->thrust)  p->anim = sPlayer_go;
-    else   p->anim = sPlayer;
+        for(auto e:entities)
+            if (e->name=="explosion")
+                if (e->anim.isEnd()) e->life=0;
 
+        if (rand()%150==0)
+        {
+            asteroid *a = new asteroid();
+            a->settings(sRock, 0,rand()%H, rand()%360, 25);
+            entities.push_back(a);
+        }
 
-    for(auto e:entities)
-     if (e->name=="explosion")
-      if (e->anim.isEnd()) e->life=0;
+        for(auto i=entities.begin();i!=entities.end();)
+        {
+            Entity *e = *i;
 
-    if (rand()%150==0)
-     {
-       asteroid *a = new asteroid();
-       a->settings(sRock, 0,rand()%H, rand()%360, 25);
-       entities.push_back(a);
-     }
+            e->update();
+            e->anim.update();
 
-    for(auto i=entities.begin();i!=entities.end();)
-    {
-      Entity *e = *i;
+            if (e->life==false) {i=entities.erase(i); delete e;}
+            else i++;
+        }
 
-      e->update();
-      e->anim.update();
+        sf::Font font;
+        font.loadFromFile("arial.ttf");
+        if (!font.loadFromFile("arial.ttf"))
+        {
+            std::cout << "Error..." << std::endl;
+        }
+        sf::Text text;
+        text.setFont(font);
+        text.setString("GAME OVER");
+        text.setCharacterSize(40);
+        text.setFillColor(sf::Color::Red);
+        text.setStyle(sf::Text::Bold);
+        text.setPosition(420, 350);
 
-      if (e->life==false) {i=entities.erase(i); delete e;}
-      else i++;
-    }
-
-   //////draw//////
-   app.draw(background);
-   for(auto i:entities) i->draw(app);
-   app.display();
+        //////draw//////
+        app.draw(background);
+        for(auto i:entities) i->draw(app);
+        if (k == 0) {
+            app.draw(text);
+        }
+        app.display();
+        if (k == 0) {
+           sleep(2);
+        }
     }
 
     return 0;
