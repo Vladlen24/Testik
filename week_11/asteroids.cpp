@@ -5,11 +5,36 @@
 #include <cmath>
 #include <iostream>
 #include <chrono>
-#include <thread>
+#include <ctime>
+#include <algorithm>
+#include <cstdlib>
 #include <unistd.h>
 
 using namespace sf;
 using namespace std::chrono_literals;
+
+class Timer
+{
+public:
+    using clock_t = std::chrono::steady_clock;
+    using time_point_t = clock_t::time_point;
+
+    Timer(): m_begin(clock_t::now()) {}
+
+    ~Timer()
+    {
+        auto end = clock_t::now();
+        std::cout << std::chrono::duration_cast <std::chrono::milliseconds>(end - m_begin).count() << " milliseconds" << std::endl;
+
+    }
+
+private:
+    time_point_t m_begin;
+};
+
+int rrand(int range_min, int range_max) {
+    return rand() % (range_max - range_min + 1) + range_min;
+}
 
 class Constants {
 public:
@@ -102,9 +127,10 @@ class asteroid: public Entity
    public:
    asteroid()
    {
-     dx=rand()%8-4;
-     dy=rand()%8-4;
-     name="asteroid";
+       srand((unsigned) time(0));
+       dx=rrand(0, 8)-4;
+       dy=rrand(0, 8)-4;
+       name="asteroid";
    }
 
    void update()
@@ -129,13 +155,14 @@ class bullet: public Entity
 
    void  update()
    {
-     dx=cos(angle*Constants::DEGTORAD)*6;
-     dy=sin(angle*Constants::DEGTORAD)*6;
-     // angle+=rand()%7-3;  /*try this*/
-     x+=dx;
-     y+=dy;
+       srand((unsigned) time(0));
+       dx=cos(angle*Constants::DEGTORAD)*6;
+       dy=sin(angle*Constants::DEGTORAD)*6;
+       angle+=rrand(0, 7)-3;  /*try this*/
+       x+=dx;
+       y+=dy;
 
-     if (x>Constants::W || x<0 || y>Constants::H || y<0) life=0;
+       if (x>Constants::W || x<0 || y>Constants::H || y<0) life=0;
    }
 
 };
@@ -172,7 +199,6 @@ class player: public Entity
     if (x>Constants::W) x=0; if (x<0) x=Constants::W;
     if (y>Constants::H) y=0; if (y<0) y=Constants::H;
 
-    //if (!life) std::cout << "GAME OVER" << std::endl;
    }
 
 };
@@ -188,7 +214,7 @@ bool isCollide(Entity *a,Entity *b)
 
 int main()
 {
-    srand(time(0));
+    srand((unsigned) time(0));
 
     RenderWindow app(VideoMode(Constants::W, Constants::H), "Asteroids!");
     app.setFramerateLimit(60);
@@ -217,13 +243,13 @@ int main()
 
 
     std::list<Entity*> entities;
-    int k = 10;
+    int k = 100;
     int points = 0;
 
     for(int i=0;i<25;i++)
     {
       asteroid *a = new asteroid();
-      a->settings(sRock, rand()%Constants::W, rand()%Constants::H, rand()%360, 25);
+      a->settings(sRock, rrand(0, Constants::W), rrand(0, Constants::H), rrand(0, 360), 25);
       entities.push_back(a);
     }
 
@@ -277,7 +303,7 @@ int main()
                     {
                         if (a->R==15) continue;
                         Entity *e = new asteroid();
-                        e->settings(sRock_small,a->x,a->y,rand()%360,15);
+                        e->settings(sRock_small,a->x,a->y,rrand(0, 360),15);
                         entities.push_back(e);
                     }
 
@@ -288,7 +314,6 @@ int main()
                         {
                             b->life=false;
                             --k;
-                            //std::cout << k << std::endl;
                             if (k == 0) a->life=false;
 
                             Entity *e = new Entity();
@@ -310,10 +335,10 @@ int main()
             if (e->name=="explosion")
                 if (e->anim.isEnd()) e->life=0;
 
-        if (rand()%150==0)
+        if (rrand(0, 150)==0)
         {
             asteroid *a = new asteroid();
-            a->settings(sRock, 0,rand()%Constants::H, rand()%360, 25);
+            a->settings(sRock, 0,rrand(0, Constants::H), rrand(0, 360), 25);
             entities.push_back(a);
         }
 
@@ -324,7 +349,10 @@ int main()
             e->update();
             e->anim.update();
 
-            if (e->life==false) {i=entities.erase(i); delete e;}
+            if (!e->life) {
+                i=entities.erase(i);
+                delete e;
+            }
             else i++;
         }
 
@@ -350,6 +378,22 @@ int main()
         score.setStyle(sf::Text::Bold);
         //score.setPosition(420, 350);
 
+        sf::Text lives;
+        lives.setFont(font);
+        lives.setString("Life: ");
+        lives.setCharacterSize(30);
+        lives.setFillColor(sf::Color::Red);
+        lives.setStyle(sf::Text::Bold);
+        lives.setPosition(0, 30);
+
+        sf::Text lives_num;
+        lives_num.setFont(font);
+        lives_num.setString(std::to_string(k));
+        lives_num.setCharacterSize(30);
+        lives_num.setFillColor(sf::Color::Red);
+        lives_num.setStyle(sf::Text::Bold);
+        lives_num.setPosition(100, 30);
+
         sf::Text score_num;
         score_num.setFont(font);
         score_num.setString(std::to_string(points));
@@ -363,6 +407,8 @@ int main()
         for(auto i:entities) i->draw(app);
         app.draw(score);
         app.draw(score_num);
+        app.draw(lives);
+        app.draw(lives_num);
         if (k == 0) {
             app.draw(text);
         }
