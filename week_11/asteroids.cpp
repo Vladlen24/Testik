@@ -11,10 +11,12 @@
 using namespace sf;
 using namespace std::chrono_literals;
 
-const int W = 1200;
-const int H = 800;
-
-float DEGTORAD = 0.017453f;
+class Constants {
+public:
+    static constexpr int W = 1200;
+    static constexpr int H = 800;
+    static constexpr float DEGTORAD = 0.017453f;
+};
 
 class Animation
 {
@@ -110,8 +112,8 @@ class asteroid: public Entity
      x+=dx;
      y+=dy;
 
-     if (x>W) x=0;  if (x<0) x=W;
-     if (y>H) y=0;  if (y<0) y=H;
+     if (x>Constants::W) x=0;  if (x<0) x=Constants::W;
+     if (y>Constants::H) y=0;  if (y<0) y=Constants::H;
    }
 
 };
@@ -127,13 +129,13 @@ class bullet: public Entity
 
    void  update()
    {
-     dx=cos(angle*DEGTORAD)*6;
-     dy=sin(angle*DEGTORAD)*6;
+     dx=cos(angle*Constants::DEGTORAD)*6;
+     dy=sin(angle*Constants::DEGTORAD)*6;
      // angle+=rand()%7-3;  /*try this*/
      x+=dx;
      y+=dy;
 
-     if (x>W || x<0 || y>H || y<0) life=0;
+     if (x>Constants::W || x<0 || y>Constants::H || y<0) life=0;
    }
 
 };
@@ -152,8 +154,8 @@ class player: public Entity
    void update()
    {
      if (thrust)
-      { dx+=cos(angle*DEGTORAD)*0.2;
-        dy+=sin(angle*DEGTORAD)*0.2; }
+      { dx+=cos(angle*Constants::DEGTORAD)*0.2;
+        dy+=sin(angle*Constants::DEGTORAD)*0.2; }
      else
       { dx*=0.99;
         dy*=0.99; }
@@ -167,8 +169,8 @@ class player: public Entity
     x+=dx;
     y+=dy;
 
-    if (x>W) x=0; if (x<0) x=W;
-    if (y>H) y=0; if (y<0) y=H;
+    if (x>Constants::W) x=0; if (x<0) x=Constants::W;
+    if (y>Constants::H) y=0; if (y<0) y=Constants::H;
 
     //if (!life) std::cout << "GAME OVER" << std::endl;
    }
@@ -188,7 +190,7 @@ int main()
 {
     srand(time(0));
 
-    RenderWindow app(VideoMode(W, H), "Asteroids!");
+    RenderWindow app(VideoMode(Constants::W, Constants::H), "Asteroids!");
     app.setFramerateLimit(60);
 
     Texture t1,t2,t3,t4,t5,t6,t7;
@@ -215,13 +217,13 @@ int main()
 
 
     std::list<Entity*> entities;
-    int k = 20;
+    int k = 10;
     int points = 0;
 
     for(int i=0;i<25;i++)
     {
       asteroid *a = new asteroid();
-      a->settings(sRock, rand()%W, rand()%H, rand()%360, 25);
+      a->settings(sRock, rand()%Constants::W, rand()%Constants::H, rand()%360, 25);
       entities.push_back(a);
     }
 
@@ -294,7 +296,7 @@ int main()
                             e->name="explosion";
                             entities.push_back(e);
 
-                            p->settings(sPlayer,W/2,H/2,0,20);
+                            p->settings(sPlayer,Constants::W/2,Constants::H/2,0,20);
                             p->dx=0; p->dy=0;
                         }
             }
@@ -311,7 +313,7 @@ int main()
         if (rand()%150==0)
         {
             asteroid *a = new asteroid();
-            a->settings(sRock, 0,rand()%H, rand()%360, 25);
+            a->settings(sRock, 0,rand()%Constants::H, rand()%360, 25);
             entities.push_back(a);
         }
 
