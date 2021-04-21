@@ -6,6 +6,7 @@
 #include <iostream>
 #include <chrono>
 #include <ctime>
+#include <random>
 #include <algorithm>
 #include <cstdlib>
 #include <unistd.h>
@@ -13,31 +14,14 @@
 using namespace sf;
 using namespace std::chrono_literals;
 
-class Timer
-{
-public:
-    using clock_t = std::chrono::steady_clock;
-    using time_point_t = clock_t::time_point;
-
-    Timer(): m_begin(clock_t::now()) {}
-
-    ~Timer()
-    {
-        auto end = clock_t::now();
-        std::cout << std::chrono::duration_cast <std::chrono::milliseconds>(end - m_begin).count() << " milliseconds" << std::endl;
-
-    }
-
-private:
-    time_point_t m_begin;
-};
-
 int rrand(int range_min, int range_max) {
-    return rand() % (range_max - range_min + 1) + range_min;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(range_min, range_max);
+    return distrib(gen);
 }
 
-class Constants {
-public:
+struct Constants {
     static constexpr int W = 1200;
     static constexpr int H = 800;
     static constexpr float DEGTORAD = 0.017453f;
@@ -110,12 +94,6 @@ class Entity
      anim.sprite.setPosition(x,y);
      anim.sprite.setRotation(angle+90);
      app.draw(anim.sprite);
-
-     CircleShape circle(R);
-     circle.setFillColor(Color(255,0,0,170));
-     circle.setPosition(x,y);
-     circle.setOrigin(R,R);
-     //app.draw(circle);
    }
 
    virtual ~Entity(){};
@@ -127,7 +105,6 @@ class asteroid: public Entity
    public:
    asteroid()
    {
-       srand((unsigned) time(0));
        dx=rrand(0, 8)-4;
        dy=rrand(0, 8)-4;
        name="asteroid";
@@ -155,7 +132,6 @@ class bullet: public Entity
 
    void  update()
    {
-       srand((unsigned) time(0));
        dx=cos(angle*Constants::DEGTORAD)*6;
        dy=sin(angle*Constants::DEGTORAD)*6;
        angle+=rrand(0, 7)-3;  /*try this*/
@@ -214,8 +190,6 @@ bool isCollide(Entity *a,Entity *b)
 
 int main()
 {
-    srand((unsigned) time(0));
-
     RenderWindow app(VideoMode(Constants::W, Constants::H), "Asteroids!");
     app.setFramerateLimit(60);
 
