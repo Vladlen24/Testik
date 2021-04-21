@@ -105,8 +105,8 @@ class asteroid: public Entity
    public:
    asteroid()
    {
-       dx=rrand(0, 8)-4;
-       dy=rrand(0, 8)-4;
+       dx=rrand(-4, 4);
+       dy=rrand(-4, 4);
        name="asteroid";
    }
 
@@ -134,7 +134,7 @@ class bullet: public Entity
    {
        dx=cos(angle*Constants::DEGTORAD)*6;
        dy=sin(angle*Constants::DEGTORAD)*6;
-       angle+=rrand(0, 7)-3;  /*try this*/
+       angle+=rrand(-3, 4);  /*try this*/
        x+=dx;
        y+=dy;
 
