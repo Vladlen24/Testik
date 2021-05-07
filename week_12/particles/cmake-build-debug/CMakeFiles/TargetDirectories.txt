@@ -1,0 +1,3 @@
+/home/vladlen/Testik/week_12/particles/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/vladlen/Testik/week_12/particles/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/vladlen/Testik/week_12/particles/cmake-build-debug/CMakeFiles/particles.dir
