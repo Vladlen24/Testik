@@ -11,7 +11,7 @@ int main()
 {
     shared_memory_object::remove("shm");
     managed_shared_memory managed_shm{open_or_create, "shm", 1024};
-    int *i = managed_shm.find_or_construct<int>("Integer")(0);
+    int *i = managed_shm.find_or_construct<int>("Integer")(1);
     string *j = managed_shm.find_or_construct<string>("Parametr1")();
     string *k = managed_shm.find_or_construct<string>("Parametr2")();
     interprocess_mutex *mtx =
