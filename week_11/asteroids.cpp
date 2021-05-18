@@ -217,10 +217,10 @@ int main()
 
 
     std::list<Entity*> entities;
-    int k = 100;
+    int k = 50;
     int points = 0;
 
-    for(int i=0;i<25;i++)
+    for(int i=0;i<0;i++)
     {
       asteroid *a = new asteroid();
       a->settings(sRock, rrand(0, Constants::W), rrand(0, Constants::H), rrand(0, 360), 25);

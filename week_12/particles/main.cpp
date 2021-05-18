@@ -23,15 +23,28 @@ int main(int argc, char ** argv)
 
 	std::vector < System::particle_t > particles;
 
-	for (auto i = 0U; i < N; ++i)
+	/*for (auto i = 0U; i < N; ++i)
 	{
-		auto angle = 2.0f * 3.141593f / N * i;
+	    for (auto j = 0U; j < 3; ++j) {
+            auto angle = 2.0f * 3.141593f / N * i;
 
-		auto position = sf::Vector2f(std::cos(angle), std::sin(angle)) * R + C;
+            auto position = sf::Vector2f(std::cos(angle), std::sin(angle)) * (R - j*2*r) + C;
 
-		particles.push_back(std::make_shared < Particle > (position, position,
-			sf::Vector2f(0.0f, 10.0f), r));
-	}
+            particles.push_back(std::make_shared<Particle>(position, position,
+                                                           sf::Vector2f(0.0f, 10.0f), r));
+        }
+	}*/
+    for (auto i = 0U; i < N; ++i)
+    {
+        auto angle = 2.0f * 3.141593f / N * i;
+
+        auto position = sf::Vector2f(std::cos(angle), std::sin(angle)) * R + C;
+
+        particles.push_back(std::make_shared < Particle > (position, position,
+                                                           sf::Vector2f(0.0f, 10.0f), r));
+    }
+    particles.push_back(std::make_shared < Particle > (C, C, sf::Vector2f(0.0f, 10.0f), r));
+    particles.push_back(std::make_shared < Particle > (sf::Vector2f(std::cos(2.0f * 3.141593f), std::sin(2.0f * 3.141593f)) * r * 5.0f + C, 5.0f*sf::Vector2f(std::cos(2.0f * 3.141593f), std::sin(2.0f * 3.141593f)) * r + C, sf::Vector2f(0.0f, 10.0f), r));
 
 	System system(min_point, max_point, particles);
 

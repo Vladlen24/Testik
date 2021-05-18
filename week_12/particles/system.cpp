@@ -4,10 +4,18 @@ void System::initialize()
 {
 	const auto size = std::size(m_particles);
 
-	for (auto i = 0U; i < size; ++i)
+	for (auto i = 0U; i < size-4; ++i)
 	{
-		m_links.push_back(Link(particle(i), particle((i + 1) % size), 0.5f));
+		m_links.push_back(Link(particle(i), particle((i+1) % size), 0.5f));
 	}
+    m_links.push_back(Link(particle(size-4), particle(size-3), 0.5f));
+    m_links.push_back(Link(particle(size-3), particle(0), 0.5f));
+    for (auto i = 0U; i < size-1; ++i) {
+        if (i != size-2) {
+            m_links.push_back(Link(particle(i), particle(size - 2), 0.005f));
+        }
+        m_links.push_back(Link(particle(i), particle(size-1), 0.005f));
+    }
 }
 
 void System::push(const sf::Vector2f force) const

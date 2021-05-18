@@ -2,7 +2,7 @@
 
 float Pressure::compute_volume() const
 {
-	const auto size = std::size(m_particles);
+	const auto size = std::size(m_particles)-2;
 
 	float volume = 0.0f;
 
@@ -16,7 +16,7 @@ float Pressure::compute_volume() const
 
 void Pressure::update() const
 {
-	const auto size = std::size(m_particles);
+	const auto size = std::size(m_particles)-2;
 
 	const auto pressure_difference = 
 		initial_pressure * m_initial_volume / compute_volume() - atmosphere_pressure;

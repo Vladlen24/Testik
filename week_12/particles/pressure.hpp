@@ -34,7 +34,7 @@ public:
 
 private:
 
-	static inline const float initial_pressure    = 0.16f;
+	static inline const float initial_pressure    = 0.05f;
 	static inline const float atmosphere_pressure = 0.04f;
 
 private:
